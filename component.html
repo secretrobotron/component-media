@@ -1,5 +1,5 @@
 <script src="popcorn.js"></script>
-<polymer-element name="ceci-media" attributes="url" extends="ceci-element">
+<polymer-element name="ceci-media" attributes="url autoplay starttime volume" extends="ceci-element">
   <ceci-definition>
     {
       "tags": ["media", "audio", "video", "youtube", "popcorn", "soundcloud"],
@@ -38,7 +38,7 @@
         }
       },
       "attributes": {
-        "startTime": {
+        "starttime": {
           "label": "Start Time",
           "description": "The desired starting point in the selected media.",
           "editable": "number",
@@ -57,6 +57,11 @@
           "max": 1,
           "min": 0,
           "listener": true
+        },
+        "autoplay": {
+          "label": "Play Automatically",
+          "description": "Play the media as soon as its ready",
+          "editable": "boolean"
         }
       }
     }
@@ -78,8 +83,9 @@
     Polymer('ceci-media', {
       // some Beethoven
       url: 'https://www.youtube.com/watch?v=zucBfXpCA6s',
-      startTime: 0,
+      starttime: 0,
       volume: 1,
+      autoplay: 'false',
       ready: function () {
         this.super();
 
@@ -124,12 +130,18 @@
           this._popcornPlayer.on(popcornEvent, this['onPopcorn' + popcornEvent.substr(0, 1).toUpperCase() + popcornEvent.substr(1)]);
         }.bind(this));
         this._popcornPlayer.volume = this.volume;
+        console.log(this.url, this.autoplay);
+        if (this.autoplay === 'true') {
+          this._popcornPlayer.play();
+        }
       },
       destroyPopcorn: function () {
         if (this._popcornPlayer) {
           popcornEvents.forEach(function (popcornEvent) {
             this._popcornPlayer.off(popcornEvent, this['onPopcorn' + popcornEvent.substr(0, 1).toUpperCase() + popcornEvent.substr(1)]);
           }.bind(this));
+          Popcorn.destroy(this._popcornPlayer);
+          this.$.mediaContainer.innerHTML = '';
         }
       }
     });
