@@ -130,7 +130,6 @@
           this._popcornPlayer.on(popcornEvent, this['onPopcorn' + popcornEvent.substr(0, 1).toUpperCase() + popcornEvent.substr(1)]);
         }.bind(this));
         this._popcornPlayer.volume = this.volume;
-        console.log(this.url, this.autoplay);
         if (this.autoplay === 'true') {
           this._popcornPlayer.play();
         }
